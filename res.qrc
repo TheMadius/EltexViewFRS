@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/"/>
+    <qresource prefix="/config">
+        <file>cameras.json</file>
+    </qresource>
+</RCC>
