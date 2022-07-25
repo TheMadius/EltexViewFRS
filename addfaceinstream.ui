@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>484</width>
+    <height>410</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,7 +43,7 @@
     <widget class="QTableWidget" name="tableWidget">
      <column>
       <property name="text">
-       <string> </string>
+       <string/>
       </property>
      </column>
      <column>
@@ -69,33 +69,17 @@
  <connections>
   <connection>
    <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>addFaceInStream</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
    <signal>rejected()</signal>
    <receiver>addFaceInStream</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>325</x>
+     <y>400</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
-     <y>274</y>
+     <y>203</y>
     </hint>
    </hints>
   </connection>
