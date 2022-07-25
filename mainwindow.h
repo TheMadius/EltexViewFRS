@@ -45,10 +45,12 @@ private slots:
     void on_action_triggered();
     void on_action_2_triggered();
     void on_action_3_triggered();
+
 private:
-    void sendServerRequest(QString request, std::string data);
-    void __init_cameras();
+    QString sendServerRequest(QString request, std::string data, bool wait = false);
     void __getSetting(std::string name_jfile);
+    void __init_cameras();
+
     Ui::MainWindow *ui;
     std::vector<QWidgetRTSPStream*> lisr_stream;
     std::vector<dataForAdd> list;

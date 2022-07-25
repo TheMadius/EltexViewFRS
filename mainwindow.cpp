@@ -74,12 +74,25 @@ MainWindow::~MainWindow() {
     }
 }
 
-void MainWindow::sendServerRequest(QString request, std::string data) {
+QString MainWindow::sendServerRequest(QString request, std::string data, bool wait) {
     QNetworkRequest requests;
+    QNetworkReply *reply;
+    QString data_reply;
 
     requests.setUrl(QUrl(request));
     requests.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/json; charset=utf-8"));
-    manager->post(requests, data.c_str());
+    reply = manager->post(requests, data.c_str());
+
+    if (wait) {
+        data_reply = reply->readAll();
+
+        while (data_reply.isEmpty()) {
+            QThread::msleep(20);
+            data_reply = reply->readAll();
+        }
+    }
+
+    return data_reply;
 }
 
 void MainWindow::replyFinished (QNetworkReply *reply) {
@@ -149,20 +162,22 @@ void MainWindow::receiveRequest(QNetworkReply *reply) {
 }
 
 void MainWindow::on_action_3_triggered() {
-    //sendServerRequest("http://localhost:9051/api/listAllFaces", "");
-    //sendServerRequest("http://localhost:9051/api/listStreams", "");
-
-    /*std::vector<std::string> streamid;
+    QString listAllFaces;
+    QString listStreams;
+    std::vector<std::string> streamid;
     std::vector<int> face;
 
+    listAllFaces = sendServerRequest("http://localhost:9051/api/listAllFaces", "", false);
+    listStreams = sendServerRequest("http://localhost:9051/api/listStreams", "", false);
+
+    streamid.push_back("321");
     streamid.push_back("12133");
     streamid.push_back("1223423");
-    streamid.push_back("321");
 
     face.push_back(123);
     face.push_back(1123);
     face.push_back(11233);
-    face.push_back(1231);*/
+    face.push_back(1231);
 
     addFaceInStream *subWin = new addFaceInStream(streamid, face, this);
     subWin->exec();
