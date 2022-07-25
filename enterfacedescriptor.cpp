@@ -6,6 +6,7 @@ enterFaceDescriptor::enterFaceDescriptor(QWidget *parent) :
     ui(new Ui::enterFaceDescriptor)
 {
     ui->setupUi(this);
+    this->ui->lineEdit_4->setReadOnly(false);
 }
 
 enterFaceDescriptor::~enterFaceDescriptor()
@@ -36,8 +37,14 @@ void enterFaceDescriptor::on_buttonBox_accepted()
         this->f_name = f_name;
         this->l_name = l_name;
         this->m_name = m_name;
-        this->file_name = file_name;
+        this->file_name = ((this->ui->checkBox->isChecked())?"local:":"") + file_name;
         this->accept();
     }
 }
 
+
+void enterFaceDescriptor::on_checkBox_stateChanged(int arg1)
+{
+    this->ui->lineEdit_4->setReadOnly((arg1));
+    this->ui->lineEdit_4->setText("");
+}

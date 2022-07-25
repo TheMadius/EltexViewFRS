@@ -69,6 +69,7 @@ void MainWindow::__init_cameras() {
 MainWindow::~MainWindow() {
     delete ui;
     delete this->manager;
+
     for(auto var: lisr_stream) {
         delete var;
     }
@@ -113,9 +114,9 @@ void MainWindow::on_action_triggered() {
             data["streamId"] = item.index;
             if (item.isActivate) {
                 data["url"] = item.url_str;
-                sendServerRequest("http://localhost:9051/api/addStream", boost::json::serialize(data));
+                sendServerRequest("http://172.16.4.3:9051/api/addStream", boost::json::serialize(data));
             } else {
-                sendServerRequest("http://localhost:9051/api/removeStream", boost::json::serialize(data));
+                sendServerRequest("http://172.16.4.3:9051/api/removeStream", boost::json::serialize(data));
                 data["url"] = item.url_str;
             }
             list_stream.push_back(data);
@@ -135,11 +136,11 @@ void MainWindow::on_action_2_triggered()
     if(subWin->result() == QDialog::Accepted){
         boost::json::object data;
         data["streamId"] = subWin->streamId.toStdString();
-        data["url"] = ("local:" + subWin->file_name).toStdString();
+        data["url"] = subWin->file_name.toStdString();
         data["name"] = subWin->f_name.toStdString();
         data["surname"] = subWin->l_name.toStdString();
         data["lastname"] = subWin->m_name.toStdString();
-        sendServerRequest("http://localhost:9051/api/registerFace", boost::json::serialize(data));
+        sendServerRequest("http://172.16.4.3:9051/api/registerFace", boost::json::serialize(data));
     }
     delete subWin;
 }
@@ -166,8 +167,8 @@ void MainWindow::on_action_3_triggered() {
     QString listAllFaces;
     QString listStreams;
 
-    listAllFaces = sendServerRequest("http://localhost:9051/api/listAllFaces", "", true);
-    listStreams = sendServerRequest("http://localhost:9051/api/listStreams", "", true);
+    listAllFaces = sendServerRequest("http://172.16.4.3:9051/api/listAllFaces", "", true);
+    listStreams = sendServerRequest("http://172.16.4.3:9051/api/listStreams", "", true);
     try {
         boost::json::value stream = boost::json::parse(listStreams.toStdString().c_str()).at("data");
         std::vector<boost::json::object> vData = boost::json::value_to<std::vector<boost::json::object>>(stream);
@@ -179,11 +180,22 @@ void MainWindow::on_action_3_triggered() {
         qDebug() << "Ошибка преобразования json!!!";
         return;
     }
-    boost::json::value json_fase = boost::json::parse(listAllFaces.toStdString().c_str());
-    if(json_fase.kind() != boost::json::kind::null)
-        face = boost::json::value_to<std::vector<int>>(json_fase);
+    try {
+        boost::json::value json_fase = boost::json::parse(listAllFaces.toStdString().c_str());
+        if(json_fase.kind() != boost::json::kind::null) {
+            boost::json::array face_array = json_fase.at("data").as_array();
+            for(auto jitem: face_array) {
+                face.push_back(boost::json::value_to<int>(jitem));
+                break;
+            }
+            //face = boost::json::value_to<std::vector<int>>(face_data);
+        }
+    } catch (...) {
+        QMessageBox::critical(NULL, QObject::tr("Ошибка"), QObject::tr("Ошибка преобразования json!!!"));
+        qDebug() << "Ошибка преобразования json!!!";
+    }
 
-    addFaceInStream *subWin = new addFaceInStream(streamid, {1,2,3,4,5,6}, this);
+    addFaceInStream *subWin = new addFaceInStream(streamid, face, this);
     subWin->exec();
 
     if(subWin->result() == QDialog::Accepted){
@@ -205,8 +217,8 @@ void MainWindow::on_action_3_triggered() {
             }
             data["faces"] = fase_add;
             data_rm["faces"] = fase_remove;
-            sendServerRequest("http://localhost:9051/api/addFaces", boost::json::serialize(data));
-            sendServerRequest("http://localhost:9051/api/removeFaces", boost::json::serialize(data_rm));
+            sendServerRequest("http://172.16.4.3:9051/api/addFaces", boost::json::serialize(data));
+            sendServerRequest("http://172.16.4.3:9051/api/removeFaces", boost::json::serialize(data_rm));
         }
     }
 }
