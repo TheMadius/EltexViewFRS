@@ -29,6 +29,7 @@ addFaceInStream::~addFaceInStream() {
 
 void addFaceInStream::on_comboBox_currentIndexChanged(int index) {
     saveTableRowOfIndex(oldIntex);
+    this->ui->checkBox->setChecked(false);
     oldIntex = index;
 
     for(int i = 0; i < this->ui->tableWidget->rowCount(); i++) {
@@ -53,3 +54,16 @@ void addFaceInStream::addTableRowOfIndex(int index) {
         this->ui->tableWidget->setItem(  this->ui->tableWidget->rowCount() - 1,  1, new QTableWidgetItem( QString::number(item.id) ));
     }
 }
+
+void addFaceInStream::on_buttonBox_accepted() {
+    saveTableRowOfIndex(this->ui->comboBox->currentIndex());
+    this->accept();
+}
+
+
+void addFaceInStream::on_checkBox_stateChanged(int arg1){
+   for(int i = 0; i < this->ui->tableWidget->rowCount(); i++) {
+    ((QCheckBox *)this->ui->tableWidget->cellWidget(i, 0))->setChecked(arg1);
+   }
+}
+

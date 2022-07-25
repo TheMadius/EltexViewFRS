@@ -40,6 +40,10 @@ public:
 
 private slots:
     void on_comboBox_currentIndexChanged(int index);
+    void on_buttonBox_accepted();
+
+    void on_checkBox_stateChanged(int arg1);
+
 private:
     void addTableRowOfIndex(int index);
     void saveTableRowOfIndex(int index);

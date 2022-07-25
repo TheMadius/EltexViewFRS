@@ -77,22 +77,21 @@ MainWindow::~MainWindow() {
 QString MainWindow::sendServerRequest(QString request, std::string data, bool wait) {
     QNetworkRequest requests;
     QNetworkReply *reply;
-    QString data_reply;
+    QString reply_data;
 
     requests.setUrl(QUrl(request));
     requests.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/json; charset=utf-8"));
     reply = manager->post(requests, data.c_str());
 
     if (wait) {
-        data_reply = reply->readAll();
-
-        while (data_reply.isEmpty()) {
-            QThread::msleep(20);
-            data_reply = reply->readAll();
-        }
+        QEventLoop eventLoop;
+        auto connect_loop = connect(reply, SIGNAL(finished()), &eventLoop, SLOT(quit()));
+        eventLoop.exec();
+        reply_data = reply->readAll();
+        disconnect(connect_loop);
+        return reply_data;
     }
-
-    return data_reply;
+    return reply_data;
 }
 
 void MainWindow::replyFinished (QNetworkReply *reply) {
@@ -162,24 +161,53 @@ void MainWindow::receiveRequest(QNetworkReply *reply) {
 }
 
 void MainWindow::on_action_3_triggered() {
-    QString listAllFaces;
-    QString listStreams;
     std::vector<std::string> streamid;
     std::vector<int> face;
+    QString listAllFaces;
+    QString listStreams;
 
-    listAllFaces = sendServerRequest("http://localhost:9051/api/listAllFaces", "", false);
-    listStreams = sendServerRequest("http://localhost:9051/api/listStreams", "", false);
+    listAllFaces = sendServerRequest("http://localhost:9051/api/listAllFaces", "", true);
+    listStreams = sendServerRequest("http://localhost:9051/api/listStreams", "", true);
+    try {
+        boost::json::value stream = boost::json::parse(listStreams.toStdString().c_str()).at("data");
+        std::vector<boost::json::object> vData = boost::json::value_to<std::vector<boost::json::object>>(stream);
+        for(auto item: vData) {
+            streamid.push_back(boost::json::value_to<std::string>(item.at("streamId")));
+        }
+    } catch (...) {
+        QMessageBox::critical(NULL, QObject::tr("Ошибка"), QObject::tr("Ошибка преобразования json!!!"));
+        qDebug() << "Ошибка преобразования json!!!";
+        return;
+    }
+    boost::json::value json_fase = boost::json::parse(listAllFaces.toStdString().c_str());
+    if(json_fase.kind() != boost::json::kind::null)
+        face = boost::json::value_to<std::vector<int>>(json_fase);
 
-    streamid.push_back("321");
-    streamid.push_back("12133");
-    streamid.push_back("1223423");
-
-    face.push_back(123);
-    face.push_back(1123);
-    face.push_back(11233);
-    face.push_back(1231);
-
-    addFaceInStream *subWin = new addFaceInStream(streamid, face, this);
+    addFaceInStream *subWin = new addFaceInStream(streamid, {1,2,3,4,5,6}, this);
     subWin->exec();
+
+    if(subWin->result() == QDialog::Accepted){
+
+        for(auto item : subWin->setting) {
+            boost::json::object data;
+            boost::json::object data_rm;
+            boost::json::array fase_add;
+            boost::json::array fase_remove;
+
+            data["streamId"] = item.id;
+            data_rm["streamId"] = item.id;
+
+            for(auto data: item.list_fase) {
+                if(data.isStream)
+                    fase_add.push_back(data.id);
+                else
+                    fase_remove.push_back(data.id);
+            }
+            data["faces"] = fase_add;
+            data_rm["faces"] = fase_remove;
+            sendServerRequest("http://localhost:9051/api/addFaces", boost::json::serialize(data));
+            sendServerRequest("http://localhost:9051/api/removeFaces", boost::json::serialize(data_rm));
+        }
+    }
 }
 
