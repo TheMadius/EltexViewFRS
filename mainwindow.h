@@ -14,6 +14,7 @@
 #include <QFile>
 #include <QTimer>
 #include <QThread>
+#include <QRegExp>
 
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -47,7 +48,8 @@ private slots:
     void on_action_3_triggered();
 
 private:
-    QString sendServerRequest(QString request, std::string data, bool wait = false);
+    QString sendServerPostRequest(QString request, std::string data, bool wait = false);
+    QString sendServerGetRequest(QString request, bool wait = false);
     void __getSetting(std::string name_jfile);
     void __init_cameras();
 
