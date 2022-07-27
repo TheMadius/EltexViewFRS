@@ -115,6 +115,8 @@
     <addaction name="action"/>
     <addaction name="action_2"/>
     <addaction name="action_3"/>
+    <addaction name="action_4"/>
+    <addaction name="action_5"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -133,6 +135,16 @@
    <property name="text">
     <string>Добавить дескрипторы к потоку
 </string>
+   </property>
+  </action>
+  <action name="action_4">
+   <property name="text">
+    <string>Добавлить реле </string>
+   </property>
+  </action>
+  <action name="action_5">
+   <property name="text">
+    <string>Добавлить реле  в поток</string>
    </property>
   </action>
  </widget>

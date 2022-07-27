@@ -260,3 +260,65 @@ void MainWindow::on_action_3_triggered() {
     }
 }
 
+
+void MainWindow::on_action_4_triggered()
+{
+    addRele *subWin = new addRele(this);
+    subWin->exec();
+
+     if(subWin->result() == QDialog::Accepted){
+          boost::json::object data;
+          data["name"] = subWin->name.toStdString();
+          data["query"] = subWin->query.toStdString();
+          data["feedback"] = subWin->feedback.toStdString();
+          sendServerPostRequest("http://localhost:9051/api/addRele", boost::json::serialize(data));
+     }
+     delete subWin;
+
+
+void MainWindow::on_action_5_triggered()
+{
+    std::vector<std::string> streamid;
+    QString listStreams;
+    std::vector<std::string> rele;
+    QString listReles;
+
+    listReles = sendServerPostRequest("http://localhost:9051/api/listReles", "", true);
+    listStreams = sendServerPostRequest("http://localhost:9051/api/listStreams", "", true);
+
+    try {
+        boost::json::value stream = boost::json::parse(listStreams.toStdString().c_str()).at("data");
+        std::vector<boost::json::object> vData = boost::json::value_to<std::vector<boost::json::object>>(stream);
+        for(auto item: vData) {
+            streamid.push_back(boost::json::value_to<std::string>(item.at("streamId")));
+        }
+    } catch (...) {
+        QMessageBox::critical(NULL, QObject::tr("Ошибка"), QObject::tr("Ошибка преобразования json!!!"));
+        qDebug() << "Ошибка преобразования json!!!";
+        //return;
+    }
+
+    try {
+        boost::json::value json_fase = boost::json::parse(listReles.toStdString().c_str());
+        if(json_fase.kind() != boost::json::kind::null) {
+            boost::json::value face_array = json_fase.at("data");
+            rele = boost::json::value_to<std::vector<std::string>>(face_array);
+        }
+    } catch (...) {
+        QMessageBox::critical(NULL, QObject::tr("Ошибка"), QObject::tr("Ошибка преобразования json!!!"));
+        qDebug() << "Ошибка преобразования json!!!";
+    }
+
+    addReleInStream *subWin = new addReleInStream(streamid, rele, this);
+    subWin->exec();
+     if(subWin->result() == QDialog::Accepted){
+         for(auto item: subWin->result_rele) {
+              boost::json::object data;
+              data["streamId"] = item.stream.toStdString();
+              data["name"] = item.rele.toStdString();
+              sendServerPostRequest("http://localhost:9051/api/connectRele", boost::json::serialize(data));
+         }
+     }
+     delete subWin;
+}
+

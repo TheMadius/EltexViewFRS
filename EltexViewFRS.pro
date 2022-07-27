@@ -14,6 +14,8 @@ SOURCES += \
     addfacedescriptor.cpp \
     addfaceinstream.cpp \
     addnewcamera.cpp \
+    addrele.cpp \
+    addreleinstream.cpp \
     enterfacedescriptor.cpp \
     enterrtspstream.cpp \
     main.cpp \
@@ -25,6 +27,8 @@ HEADERS += \
     addfacedescriptor.h \
     addfaceinstream.h \
     addnewcamera.h \
+    addrele.h \
+    addreleinstream.h \
     enterfacedescriptor.h \
     enterrtspstream.h \
     mainwindow.h \
@@ -35,6 +39,8 @@ FORMS += \
     addfacedescriptor.ui \
     addfaceinstream.ui \
     addnewcamera.ui \
+    addrele.ui \
+    addreleinstream.ui \
     enterfacedescriptor.ui \
     enterrtspstream.ui \
     mainwindow.ui

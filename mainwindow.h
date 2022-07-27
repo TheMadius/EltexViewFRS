@@ -27,6 +27,8 @@
 #include "enterfacedescriptor.h"
 #include "addnewcamera.h"
 #include "addfaceinstream.h"
+#include "addreleinstream.h"
+#include "addrele.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -46,6 +48,10 @@ private slots:
     void on_action_triggered();
     void on_action_2_triggered();
     void on_action_3_triggered();
+
+    void on_action_4_triggered();
+
+    void on_action_5_triggered();
 
 private:
     QString sendServerPostRequest(QString request, std::string data, bool wait = false);
