@@ -45,7 +45,9 @@ void addFaceInStream::saveTableRowOfIndex(int index) {
 
 void addFaceInStream::addTableRowOfIndex(int index) {
     this->ui->tableWidget->setRowCount(0);
-
+    if (setting.size() <= index) {
+        return;
+    }
     for(auto item : this->setting[index].list_fase) {
         auto check = new QCheckBox();
         check->setChecked(item.isStream);

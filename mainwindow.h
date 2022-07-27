@@ -53,6 +53,8 @@ private slots:
 
     void on_action_5_triggered();
 
+    void on_comboBox_activated(int index);
+
 private:
     QString sendServerPostRequest(QString request, std::string data, bool wait = false);
     QString sendServerGetRequest(QString request, bool wait = false);

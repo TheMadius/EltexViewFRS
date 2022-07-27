@@ -58,17 +58,8 @@ void MainWindow::__getSetting(std::string name_jfile) {
 }
 
 void MainWindow::__init_cameras() {
-    QString test;
-    QRegExp re( "ws://[\\d\\.\\:/]+" );
     std::vector<std::string> streamid;
     QString listStreams;
-    QString url;
-    WebSocketClient ws;
-    ws.open("ws://127.0.0.1:9999/test");
-
-    test = sendServerGetRequest("http://localhost:9051/api/watchVideo?streamId=999", true);
-    re.indexIn(test);
-    url = re.cap();
 
     listStreams = sendServerPostRequest("http://localhost:9051/api/listStreams", "", true);
 
@@ -221,7 +212,6 @@ void MainWindow::on_action_3_triggered() {
     } catch (...) {
         QMessageBox::critical(NULL, QObject::tr("Ошибка"), QObject::tr("Ошибка преобразования json!!!"));
         qDebug() << "Ошибка преобразования json!!!";
-        return;
     }
 
     try {
@@ -266,6 +256,8 @@ void MainWindow::on_action_3_triggered() {
             sendServerPostRequest("http://localhost:9051/api/removeFaces", boost::json::serialize(data_rm));
         }
     }
+
+    delete subWin;
 }
 
 
@@ -289,7 +281,7 @@ void MainWindow::on_action_4_triggered()
 
     addRele *subWin = new addRele(vData, this);
     subWin->exec();
-     if(subWin->result() == QDialog::Accepted){
+     if (subWin->result() == QDialog::Accepted) {
           boost::json::object data;
           data["name"] = subWin->name.toStdString();
           data["query"] = subWin->query.toStdString();
@@ -343,5 +335,20 @@ void MainWindow::on_action_5_triggered()
          }
      }
      delete subWin;
+}
+
+
+void MainWindow::on_comboBox_activated(int index)
+{
+    QString text;
+    QRegExp re( "ws://[\\d\\.\\:/]+" );
+    QString url;
+    WebSocketClient ws;
+    ws.open("ws://127.0.0.1:9999/test");
+
+    text = sendServerGetRequest("http://localhost:9051/api/watchVideo?streamId=999", true);
+    re.indexIn(text);
+    url = re.cap();
+
 }
 
