@@ -3,6 +3,9 @@
 
 #include <QDialog>
 #include <QMessageBox>
+#include <vector>
+#include <string>
+
 namespace Ui {
 class addRele;
 }
@@ -15,7 +18,7 @@ public:
     QString name;
     QString query;
     QString feedback;
-    explicit addRele(QWidget *parent = nullptr);
+    explicit addRele(std::vector<std::string>list_curl, QWidget *parent = nullptr);
     ~addRele();
 
 private slots:

@@ -30,15 +30,17 @@ void MainWindow::__getSetting(std::string name_jfile) {
     std::ifstream f(name_jfile);
     std::stringstream ss;
     boost::json::value tree;
+    std::vector<boost::json::object> vData;
+
     ss << f.rdbuf();
     std::string resv_json = ss.str();
     try {
         tree  = boost::json::parse(resv_json);
+        vData = boost::json::value_to<std::vector<boost::json::object>>(tree);
     } catch (...) {
         qDebug() << "Error: don't parse file!";
         return;
     }
-    std::vector<boost::json::object> vData = boost::json::value_to<std::vector<boost::json::object>>(tree);
 
     for(auto item: vData) {
         int id;
@@ -269,9 +271,24 @@ void MainWindow::on_action_3_triggered() {
 
 void MainWindow::on_action_4_triggered()
 {
-    addRele *subWin = new addRele(this);
-    subWin->exec();
+    std::ifstream f("query.conf");
+    std::stringstream ss;
+    boost::json::value tree;
+    std::vector<std::string> vData;
 
+    ss << f.rdbuf();
+    std::string resv_json = ss.str();
+
+    try {
+        tree  = boost::json::parse(resv_json);
+        vData = boost::json::value_to<std::vector<std::string>>(tree);
+    } catch (...) {
+        qDebug() << "Error: don't parse file!";
+        return;
+    }
+
+    addRele *subWin = new addRele(vData, this);
+    subWin->exec();
      if(subWin->result() == QDialog::Accepted){
           boost::json::object data;
           data["name"] = subWin->name.toStdString();
