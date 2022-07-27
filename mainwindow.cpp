@@ -1,7 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "boost/json/src.hpp"
-
+#include "hv/WebSocketClient.h"
+using namespace hv ;
 //    QSettings conf;
 //    conf.setValue("section1/key1", 123);   // запись в секцию section1
 //    conf.setValue("key2", 1421);
@@ -59,10 +60,15 @@ void MainWindow::__init_cameras() {
     QRegExp re( "ws://[\\d\\.\\:/]+" );
     std::vector<std::string> streamid;
     QString listStreams;
+    QString url;
+    WebSocketClient ws;
+    ws.open("ws://127.0.0.1:9999/test");
 
     test = sendServerGetRequest("http://localhost:9051/api/watchVideo?streamId=999", true);
-    listStreams = sendServerPostRequest("http://localhost:9051/api/listStreams", "", true);
     re.indexIn(test);
+    url = re.cap();
+
+    listStreams = sendServerPostRequest("http://localhost:9051/api/listStreams", "", true);
 
     try {
         boost::json::value stream = boost::json::parse(listStreams.toStdString().c_str()).at("data");
@@ -75,10 +81,10 @@ void MainWindow::__init_cameras() {
         qDebug() << "Ошибка преобразования json!!!";
         return;
     }
+
     for(auto item: streamid) {
         this->ui->comboBox->addItem(item.c_str());
     }
-
 
 }
 MainWindow::~MainWindow() {
@@ -274,7 +280,7 @@ void MainWindow::on_action_4_triggered()
           sendServerPostRequest("http://localhost:9051/api/addRele", boost::json::serialize(data));
      }
      delete subWin;
-
+}
 
 void MainWindow::on_action_5_triggered()
 {

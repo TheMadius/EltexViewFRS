@@ -7,8 +7,13 @@ CONFIG += c++17
 
 INCLUDEPATH += "/usr/local/include"
 INCLUDEPATH += "/usr/local/include/opencv4"
+INCLUDEPATH += "./include"
+
+QMAKE_CFLAGS += -Wl,-rpath,"../EltexViewFRS/lib"
 
 LIBS += -L"/usr/local/lib" -lopencv_highgui -lopencv_video -lopencv_videoio -lopencv_imgcodecs -lopencv_imgproc -lopencv_core
+
+LIBS += -L"../EltexViewFRS/lib" -lhv
 
 SOURCES += \
     addfacedescriptor.cpp \
