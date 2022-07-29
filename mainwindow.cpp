@@ -2,10 +2,6 @@
 #include "ui_mainwindow.h"
 #include "boost/json/src.hpp"
 
-//    QSettings conf;
-//    conf.setValue("section1/key1", 123);   // запись в секцию section1
-//    conf.setValue("key2", 1421);
-
 template<class T>
 void extract( boost::json::object const& obj, T& t, boost::json::string_view key )
 {
@@ -36,12 +32,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     ws->onmessage = [&](const std::string& msg) {
         std::vector<uchar> image(msg.begin(), msg.end());
-        auto frame = cv::imdecode(cv::Mat(image), CV_LOAD_IMAGE_COLOR);
+        auto frame = cv::imdecode(cv::Mat(image), cv::IMREAD_COLOR);
 
         double dx,dy;
         dx = ui->graphicsView->width() / (double)frame.cols;
         dy = ui->graphicsView->height() / (double)frame.rows;
-        cv::resize(frame, frame, cv::Size(), dx, dy, CV_INTER_AREA);
+        cv::resize(frame, frame, cv::Size(), dx, dy, cv::INTER_AREA);
         emit this->dataDone(frame);
     };
 
@@ -88,7 +84,7 @@ void MainWindow::__init_cameras() {
     std::vector<std::string> streamid;
     QString listStreams;
 
-    listStreams = sendServerPostRequest("http://172.16.4.3:9051/api/listStreams", "", true);
+    listStreams = sendServerPostRequest("http://localhost:9051/api/listStreams", "", true);
 
     try {
         boost::json::value stream = boost::json::parse(listStreams.toStdString().c_str()).at("data");
@@ -177,9 +173,9 @@ void MainWindow::on_action_triggered() {
             data["streamId"] = item.index;
             if (item.isActivate) {
                 data["url"] = item.url_str;
-                sendServerPostRequest("http://172.16.4.3:9051/api/addStream", boost::json::serialize(data));
+                sendServerPostRequest("http://localhost:9051/api/addStream", boost::json::serialize(data));
             } else {
-                sendServerPostRequest("http://172.16.4.3:9051/api/removeStream", boost::json::serialize(data));
+                sendServerPostRequest("http://localhost:9051/api/removeStream", boost::json::serialize(data));
                 data["url"] = item.url_str;
             }
             list_stream.push_back(data);
@@ -203,7 +199,7 @@ void MainWindow::on_action_2_triggered()
         data["name"] = subWin->f_name.toStdString();
         data["surname"] = subWin->l_name.toStdString();
         data["lastname"] = subWin->m_name.toStdString();
-        sendServerPostRequest("http://172.16.4.3:9051/api/registerFace", boost::json::serialize(data));
+        sendServerPostRequest("http://localhost:9051/api/registerFace", boost::json::serialize(data));
     }
     delete subWin;
 }
@@ -230,8 +226,8 @@ void MainWindow::on_action_3_triggered() {
     std::vector<int> face;
     QString listAllFaces;
 
-    listAllFaces = sendServerPostRequest("http://172.16.4.3:9051/api/listAllFaces", "", true);
-    listStreams = sendServerPostRequest("http://172.16.4.3:9051/api/listStreams", "", true);
+    listAllFaces = sendServerPostRequest("http://localhost:9051/api/listAllFaces", "", true);
+    listStreams = sendServerPostRequest("http://localhost:9051/api/listStreams", "", true);
 
     try {
         boost::json::value stream = boost::json::parse(listStreams.toStdString().c_str()).at("data");
@@ -259,7 +255,7 @@ void MainWindow::on_action_3_triggered() {
         qDebug() << "Ошибка преобразования json!!!";
     }
 
-    addFaceInStream *subWin = new addFaceInStream(streamid, face, this);
+    addFaceInStream *subWin = new addFaceInStream({"1","2","3"}, {1,23,4,5,6,8}, this);
     subWin->exec();
 
     if(subWin->result() == QDialog::Accepted){
@@ -282,8 +278,8 @@ void MainWindow::on_action_3_triggered() {
             data["faces"] = fase_add;
             data_rm["faces"] = fase_remove;     
 
-            sendServerPostRequest("http://172.16.4.3:9051/api/addFaces", boost::json::serialize(data));
-            sendServerPostRequest("http://172.16.4.3:9051/api/removeFaces", boost::json::serialize(data_rm));
+            sendServerPostRequest("http://localhost:9051/api/addFaces", boost::json::serialize(data));
+            sendServerPostRequest("http://localhost:9051/api/removeFaces", boost::json::serialize(data_rm));
         }
     }
 
@@ -316,7 +312,7 @@ void MainWindow::on_action_4_triggered()
           data["name"] = subWin->name.toStdString();
           data["query"] = subWin->query.toStdString();
           data["feedback"] = subWin->feedback.toStdString();
-          sendServerPostRequest("http://172.16.4.3:9051/api/addRele", boost::json::serialize(data));
+          sendServerPostRequest("http://localhost:9051/api/addRele", boost::json::serialize(data));
      }
      delete subWin;
 }
@@ -328,8 +324,8 @@ void MainWindow::on_action_5_triggered()
     std::vector<std::string> rele;
     QString listReles;
 
-    listReles = sendServerPostRequest("http://172.16.4.3:9051/api/listReles", "", true);
-    listStreams = sendServerPostRequest("http://172.16.4.3:9051/api/listStreams", "", true);
+    listReles = sendServerPostRequest("http://localhost:9051/api/listReles", "", true);
+    listStreams = sendServerPostRequest("http://localhost:9051/api/listStreams", "", true);
 
     try {
         boost::json::value stream = boost::json::parse(listStreams.toStdString().c_str()).at("data");
@@ -364,7 +360,7 @@ void MainWindow::on_action_5_triggered()
               boost::json::object data;
               data["streamId"] = item.stream.toStdString();
               data["name"] = item.rele.toStdString();
-              sendServerPostRequest("http://172.16.4.3:9051/api/connectRele", boost::json::serialize(data));
+              sendServerPostRequest("http://localhost:9051/api/connectRele", boost::json::serialize(data));
          }
      }
      delete subWin;
@@ -383,9 +379,9 @@ void MainWindow::on_comboBox_activated(int index)
         QRegExp re( "ws://[\\d\\.\\:/]+" );
         QString url;
         QString text;
-        text = sendServerGetRequest("http://172.16.4.3:9051/api/watchVideo?streamId=" + this->ui->comboBox->currentText(), true);
+        text = sendServerGetRequest("http://localhost:9051/api/watchVideo?streamId=" + this->ui->comboBox->currentText(), true);
         re.indexIn(text);
-        url = re.cap() + this->ui->comboBox->currentText();
+        url = re.cap();
         if(ws->isConnected()) {
             ws->send("close");
             ws->close();

@@ -1,5 +1,8 @@
 <RCC>
-    <qresource prefix="/"/>
+    <qresource prefix="/">
+        <file>qt/qdarkstyle/qss/_styles.scss</file>
+        <file>qss/_styles.scss</file>
+    </qresource>
     <qresource prefix="/config">
         <file>cameras.json</file>
     </qresource>
