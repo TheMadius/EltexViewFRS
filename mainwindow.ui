@@ -118,7 +118,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_7">
                 <item>
-                 <widget class="QPushButton" name="pushButton_3">
+                 <widget class="QPushButton" name="B_New_stream">
                   <property name="text">
                    <string>Новая видеопоток</string>
                   </property>
@@ -140,26 +140,26 @@
                </layout>
               </item>
               <item>
-               <widget class="QLineEdit" name="lineEdit_3">
+               <widget class="QLineEdit" name="find_edit">
                 <property name="text">
                  <string>Поиск</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QTableWidget" name="tableWidget"/>
+               <widget class="QListWidget" name="listStream"/>
               </item>
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_7">
                 <item>
-                 <widget class="QPushButton" name="pushButton">
+                 <widget class="QPushButton" name="B_Export_stream">
                   <property name="text">
                    <string>Экспорт видеопотока</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pushButton_2">
+                 <widget class="QPushButton" name="B_Import_stream">
                   <property name="text">
                    <string>Импорт видеопотока</string>
                   </property>
@@ -185,7 +185,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="lineEdit"/>
+                     <widget class="QLineEdit" name="lineStreamId"/>
                     </item>
                    </layout>
                   </item>
@@ -201,10 +201,10 @@
                     <item>
                      <layout class="QHBoxLayout" name="horizontalLayout_10">
                       <item>
-                       <widget class="QLineEdit" name="lineEdit_2"/>
+                       <widget class="QLineEdit" name="stream_url"/>
                       </item>
                       <item>
-                       <widget class="QPushButton" name="pushButton_7">
+                       <widget class="QPushButton" name="B_Play_stream">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                           <horstretch>0</horstretch>
@@ -213,6 +213,10 @@
                         </property>
                         <property name="text">
                          <string/>
+                        </property>
+                        <property name="icon">
+                         <iconset resource="dark/style.qrc">
+                          <normaloff>:/qss_icons/dark/rc/arrow_right.png</normaloff>:/qss_icons/dark/rc/arrow_right.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -228,7 +232,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QComboBox" name="comboBox_2"/>
+                       <widget class="QComboBox" name="rele_box"/>
                       </item>
                      </layout>
                     </item>
@@ -242,7 +246,18 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QTableWidget" name="tableWidget_2"/>
+                       <widget class="QTableWidget" name="list_face">
+                        <column>
+                         <property name="text">
+                          <string>Вкл/Выкл</string>
+                         </property>
+                        </column>
+                        <column>
+                         <property name="text">
+                          <string>Номер лица</string>
+                         </property>
+                        </column>
+                       </widget>
                       </item>
                      </layout>
                     </item>
@@ -262,7 +277,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QGraphicsView" name="graphicsView_2"/>
+                     <widget class="QGraphicsView" name="graphicsStreeam"/>
                     </item>
                    </layout>
                   </item>
@@ -278,7 +293,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QTextBrowser" name="textBrowser"/>
+                       <widget class="QTextBrowser" name="pointBrowser"/>
                       </item>
                      </layout>
                     </item>
@@ -294,7 +309,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="lineEdit_4"/>
+                         <widget class="QLineEdit" name="nameZone"/>
                         </item>
                        </layout>
                       </item>
@@ -312,14 +327,14 @@
                        </spacer>
                       </item>
                       <item>
-                       <widget class="QPushButton" name="pushButton_8">
+                       <widget class="QPushButton" name="B_Add_zone">
                         <property name="text">
                          <string>Добавить зону</string>
                         </property>
                        </widget>
                       </item>
                       <item>
-                       <widget class="QPushButton" name="pushButton_9">
+                       <widget class="QPushButton" name="B_Del_zone">
                         <property name="text">
                          <string>Удалить зону</string>
                         </property>
@@ -336,7 +351,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_9">
                 <item>
-                 <widget class="QPushButton" name="pushButton_6">
+                 <widget class="QPushButton" name="B_Stream_Del">
                   <property name="text">
                    <string>Удалить видеопоток</string>
                   </property>
@@ -358,14 +373,14 @@
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_4">
                   <item>
-                   <widget class="QPushButton" name="pushButton_4">
+                   <widget class="QPushButton" name="B_Close">
                     <property name="text">
                      <string>Закрыть</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="pushButton_5">
+                   <widget class="QPushButton" name="B_Accept">
                     <property name="text">
                      <string>Применить</string>
                     </property>
@@ -436,6 +451,8 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="dark/style.qrc"/>
+ </resources>
  <connections/>
 </ui>

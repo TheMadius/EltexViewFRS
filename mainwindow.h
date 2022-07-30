@@ -6,6 +6,7 @@
 #include <fstream>
 #include <QSettings>
 #include <QMainWindow>
+#include <QListWidgetItem>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QHttpMultiPart>
@@ -49,7 +50,6 @@ public:
 
 private slots:
     void replyFinished (QNetworkReply *reply);
-    void receiveRequest(QNetworkReply *reply);
     void updata_pixmap(cv::Mat imange);
     void on_action_triggered();
     void on_action_2_triggered();
@@ -57,6 +57,10 @@ private slots:
     void on_action_4_triggered();
     void on_action_5_triggered();
     void on_comboBox_activated(int index);
+
+    void on_listStream_itemClicked(QListWidgetItem *item);
+
+    void on_B_Play_stream_clicked();
 
 signals:
     void dataDone(cv::Mat imange);
@@ -66,7 +70,9 @@ private:
     QString sendServerPostRequest(QString request, std::string data, bool wait = false);
     QString sendServerGetRequest(QString request, bool wait = false);
     void __getSetting(std::string name_jfile);
-    void __init_cameras();
+    std::vector<std::string> getListStream();
+    std::vector<std::string> getlistRele();
+    std::vector<int> getListFace();
 
     Ui::MainWindow *ui;
     std::vector<QWidgetRTSPStream*> lisr_stream;

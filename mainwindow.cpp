@@ -23,10 +23,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(manager, SIGNAL(finished(QNetworkReply *)),
                this, SLOT(replyFinished(QNetworkReply *)));
+
     this->connected = connect(this, &MainWindow::dataDone,
                                 this, &MainWindow::updata_pixmap);
 
-    this->count_stream = 0;
     ws = new WebSocketClient();
     scene = new QGraphicsScene();
 
@@ -35,74 +35,105 @@ MainWindow::MainWindow(QWidget *parent)
         auto frame = cv::imdecode(cv::Mat(image), cv::IMREAD_COLOR);
 
         double dx,dy;
-        dx = ui->graphicsView->width() / (double)frame.cols;
-        dy = ui->graphicsView->height() / (double)frame.rows;
+        dx = ui->graphicsStreeam->width() / (double)frame.cols;
+        dy = ui->graphicsStreeam->height() / (double)frame.rows;
         cv::resize(frame, frame, cv::Size(), dx, dy, cv::INTER_AREA);
         emit this->dataDone(frame);
     };
 
-    this->ui->graphicsView->setScene(scene);
-    this->ui->graphicsView->setRenderHint(QPainter::Antialiasing);
-    this->ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    this->ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->ui->list_face->horizontalHeader()->setStretchLastSection( true );
 
-    __getSetting("cameras.json");
-    __init_cameras();
+    this->ui->graphicsStreeam->setScene(scene);
+    this->ui->graphicsStreeam->setRenderHint(QPainter::Antialiasing);
+    this->ui->graphicsStreeam->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->ui->graphicsStreeam->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    auto listStream = getListStream();
+    for (auto var: listStream) {
+        this->ui->listStream->addItem(var.c_str());
+    }
 }
+
+void MainWindow::updata_pixmap(cv::Mat imange)
+{
+    QImage img_img1 = cvMatToQImage(imange);
+    this->scene->addPixmap( QPixmap::fromImage(img_img1) );
+    this->scene->update( QRectF(0,0,imange.cols,imange.rows) );
+}
+
 void MainWindow::__getSetting(std::string name_jfile) {
-    std::ifstream f(name_jfile);
-    std::stringstream ss;
-    boost::json::value tree;
-    std::vector<boost::json::object> vData;
-
-    ss << f.rdbuf();
-    std::string resv_json = ss.str();
-    try {
-        tree  = boost::json::parse(resv_json);
-        vData = boost::json::value_to<std::vector<boost::json::object>>(tree);
-    } catch (...) {
-        qDebug() << "Error: don't parse file!";
-        return;
-    }
-
-    for(auto item: vData) {
-        int id;
-        std::string str;
-        dataForAdd data;
-
-        extract(item, str, "url");
-        extract(item, id, "streamId");
-
-        data.index = id;
-        data.url_str = str;
-
-        list.push_back(data);
-    }
+    //PASS
 }
 
-void MainWindow::__init_cameras() {
+std::vector<std::string> MainWindow::getListStream() {
     std::vector<std::string> streamid;
     QString listStreams;
 
     listStreams = sendServerPostRequest("http://localhost:9051/api/listStreams", "", true);
 
     try {
-        boost::json::value stream = boost::json::parse(listStreams.toStdString().c_str()).at("data");
-        std::vector<boost::json::object> vData = boost::json::value_to<std::vector<boost::json::object>>(stream);
-        for(auto item: vData) {
-            streamid.push_back(boost::json::value_to<std::string>(item.at("streamId")));
+        boost::json::value stream = boost::json::parse(listStreams.toStdString().c_str());
+        if(stream.kind() != boost::json::kind::null)
+        {
+            stream = stream.at("data");
+            std::vector<boost::json::object> vData = boost::json::value_to<std::vector<boost::json::object>>(stream);
+            for(auto item: vData) {
+                streamid.push_back(boost::json::value_to<std::string>(item.at("streamId")));
+            }
         }
     } catch (...) {
         QMessageBox::critical(NULL, QObject::tr("Ошибка"), QObject::tr("Ошибка преобразования json!!!"));
         qDebug() << "Ошибка преобразования json!!!";
-        return;
+        return streamid;
     }
-
-    for(auto item: streamid) {
-        this->ui->comboBox->addItem(item.c_str());
-    }
-
+    return streamid;
 }
+
+std::vector<int> MainWindow::getListFace() {
+    std::vector<int> face;
+    QString listAllFaces;
+
+    listAllFaces = sendServerPostRequest("http://localhost:9051/api/listAllFaces", "", true);
+
+    try {
+        boost::json::value json_fase = boost::json::parse(listAllFaces.toStdString().c_str());
+        if(json_fase.kind() != boost::json::kind::null) {
+            boost::json::array face_array = json_fase.at("data").as_array();
+            for(auto jitem: face_array) {
+                face.push_back(boost::json::value_to<int>(jitem));
+                break;
+            }
+        }
+    } catch (...) {
+        QMessageBox::critical(NULL, QObject::tr("Ошибка"), QObject::tr("Ошибка преобразования json!!!"));
+        qDebug() << "Ошибка преобразования json!!!";
+    }
+    return face;
+}
+
+std::vector<std::string> MainWindow::getlistRele()
+{
+    std::vector<std::string> rele;
+    QString listReles;
+
+    listReles = sendServerPostRequest("http://localhost:9051/api/listReles", "", true);
+
+    try {
+        boost::json::value json_fase = boost::json::parse(listReles.toStdString().c_str());
+        if(json_fase.kind() != boost::json::kind::null) {
+            boost::json::value face_array = json_fase.at("data");
+            std::vector<boost::json::object> array_obj = boost::json::value_to<std::vector<boost::json::object>>(face_array);
+            for(auto item: array_obj) {
+                rele.push_back(boost::json::value_to<std::string>( item.at( "name" ) ));
+            }
+        }
+    } catch (...) {
+        QMessageBox::critical(NULL, QObject::tr("Ошибка"), QObject::tr("Ошибка преобразования json!!!"));
+        qDebug() << "Ошибка преобразования json!!!";
+    }
+    return rele;
+}
+
 MainWindow::~MainWindow() {
     disconnect(this->connected);
     delete ui;
@@ -186,7 +217,6 @@ void MainWindow::on_action_triggered() {
     }
 }
 
-
 void MainWindow::on_action_2_triggered()
 {
     enterFaceDescriptor *subWin = new enterFaceDescriptor(this);
@@ -202,22 +232,6 @@ void MainWindow::on_action_2_triggered()
         sendServerPostRequest("http://localhost:9051/api/registerFace", boost::json::serialize(data));
     }
     delete subWin;
-}
-
-void MainWindow::receiveRequest(QNetworkReply *reply) {
-    if (reply->error() != QNetworkReply::NoError) {
-         qDebug() << "ERROR!";
-         qDebug() << reply->errorString();
-     } else {
-         QString data = reply->readAll();
-         if(data == QString("null")) {
-             QMessageBox::critical(NULL, QObject::tr("Ошибка"), QObject::tr("В базе нет дескрипторов!!!"));
-             qDebug() << "ERROR! Empty data";
-         } else {
-
-         }
-     }
-     reply->deleteLater();
 }
 
 void MainWindow::on_action_3_triggered() {
@@ -286,7 +300,6 @@ void MainWindow::on_action_3_triggered() {
     delete subWin;
 }
 
-
 void MainWindow::on_action_4_triggered()
 {
     std::ifstream f("query.conf");
@@ -336,7 +349,6 @@ void MainWindow::on_action_5_triggered()
     } catch (...) {
         QMessageBox::critical(NULL, QObject::tr("Ошибка"), QObject::tr("Ошибка преобразования json!!!"));
         qDebug() << "Ошибка преобразования json!!!";
-        //return;
     }
 
     try {
@@ -366,35 +378,64 @@ void MainWindow::on_action_5_triggered()
      delete subWin;
 }
 
-void MainWindow::updata_pixmap(cv::Mat imange)
-{
-    QImage img_img1 = cvMatToQImage(imange);
-    this->scene->addPixmap( QPixmap::fromImage(img_img1) );
-    this->scene->update( QRectF(0,0,imange.cols,imange.rows) );
-}
-
 void MainWindow::on_comboBox_activated(int index)
 {
     if(index != 0){
-        QRegExp re( "ws://[\\d\\.\\:/]+" );
-        QString url;
-        QString text;
-        text = sendServerGetRequest("http://localhost:9051/api/watchVideo?streamId=" + this->ui->comboBox->currentText(), true);
-        re.indexIn(text);
-        url = re.cap();
-        if(ws->isConnected()) {
-            ws->send("close");
-            ws->close();
-        }
-        ws->open(url.toStdString().c_str());
-    } else {
-        if (this->ws->isConnected()) {
-            this->scene->clear();
 
-            ws->send("close");
-            ws->close();
+    } else {
+
+    }
+}
+
+void MainWindow::on_listStream_itemClicked(QListWidgetItem *item)
+{
+    this->ui->lineStreamId->setText(item->text());
+
+    QString listDataStream = sendServerPostRequest("http://localhost:9051/api/listStreams", "", true);
+    try {
+        boost::json::value stream = boost::json::parse(listDataStream.toStdString().c_str());
+        if(stream.kind() != boost::json::kind::null)
+        {
+            stream = stream.at("data");
+            std::vector<boost::json::object> vData = boost::json::value_to<std::vector<boost::json::object>>(stream);
+            for(auto var: vData) {
+                auto stream = boost::json::value_to<std::string>(var.at("streamId"));
+                if(stream == item->text().toStdString()){
+                    std::vector<int> allFace = getListFace();
+                    for(auto idFace: allFace) {
+                        this->ui->list_face->insertRow(this->ui->list_face->rowCount());
+                        this->ui->list_face->setCellWidget( this->ui->list_face->rowCount() - 1, 0, new QCheckBox());
+                        this->ui->list_face->setItem(  this->ui->list_face->rowCount() - 1,  1, new QTableWidgetItem(QString::number(idFace)));
+                    }
+                }
+            }
         }
+    } catch (...) {
+        QMessageBox::critical(NULL, QObject::tr("Ошибка"), QObject::tr("Ошибка преобразования json!!!"));
+        qDebug() << "Ошибка преобразования json!!!";
+        return;
     }
 
+}
+
+
+void MainWindow::on_B_Play_stream_clicked()
+{
+    if (!ws->isConnected()) {
+        this->ui->B_Play_stream->setIcon(QIcon(":/qss_icons/dark/rc/checkbox_unchecked.png"));
+        QRegExp re( "ws://[\\d\\.\\:]+" );
+        QString url;
+        QString text;
+
+        text = sendServerGetRequest("http://localhost:9051/api/watchVideo?streamId=" + this->ui->lineStreamId->text(), true);
+        re.indexIn(text);
+        url = re.cap() + "/" + this->ui->lineStreamId->text();
+        ws->open(url.toStdString().c_str());
+    } else {
+        this->ui->B_Play_stream->setIcon(QIcon(":/qss_icons/dark/rc/arrow_right.png"));
+        this->scene->clear();
+        ws->send("close");
+        ws->close();
+    }
 }
 
