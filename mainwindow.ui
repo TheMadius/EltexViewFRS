@@ -201,7 +201,7 @@
                     <item>
                      <layout class="QHBoxLayout" name="horizontalLayout_10">
                       <item>
-                       <widget class="QLineEdit" name="stream_url"/>
+                       <widget class="QLineEdit" name="lineStream_url"/>
                       </item>
                       <item>
                        <widget class="QPushButton" name="B_Play_stream">
