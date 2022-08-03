@@ -1,42 +1,16 @@
 MAKEFILE      = Makefile
 
-EQ            = =
-
-
 CC            = gcc
 CXX           = g++
 DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -O2 -std=gnu++1z -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
 INCPATH       = -I. -Iinclude -I./include -I./include/opencv4 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
-QMAKE         = /usr/lib/qt5/bin/qmake
-MAKE		  = make
+MAKE	      = make
 DEL_FILE      = rm -f
-CHK_DIR_EXISTS= test -d
-MKDIR         = mkdir -p
-COPY          = cp -f
-COPY_FILE     = cp -f
-COPY_DIR      = cp -f -R
-INSTALL_FILE  = install -m 644 -p
-INSTALL_PROGRAM = install -m 755 -p
-INSTALL_DIR   = cp -f -R
-QINSTALL      = /usr/lib/qt5/bin/qmake -install qinstall
-QINSTALL_PROGRAM = /usr/lib/qt5/bin/qmake -install qinstall -exe
-DEL_FILE      = rm -f
-SYMLINK       = ln -f -s
-DEL_DIR       = rmdir
-MOVE          = mv -f
-TAR           = tar -cf
-COMPRESS      = gzip -9f
-DISTNAME      = EltexViewFRS1.0.0
-DISTDIR = /home/nadius/EltexViewFRS/.tmp/EltexViewFRS1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-rpath,../EltexViewFRS/lib,-O1
 LIBS          = $(SUBLIBS) -L./lib -lopencv_highgui -lopencv_video -lopencv_videoio -lopencv_imgcodecs -lopencv_imgproc -lopencv_core -L./lib -lhv /usr/lib/x86_64-linux-gnu/libQt5Widgets.so /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Network.so /usr/lib/x86_64-linux-gnu/libQt5Core.so -lGL -lpthread   
-AR            = ar cqs
-RANLIB        = 
-SED           = sed
-STRIP         = strip
 
 SOURCES       = addfacedescriptor.cpp \
 		addfaceinstream.cpp \
@@ -59,6 +33,7 @@ SOURCES       = addfacedescriptor.cpp \
 		moc_mainwindow.cpp \
 		moc_qwidgetrtspstream.cpp \
 		moc_rtspstreamer.cpp
+		
 OBJECTS       = addfacedescriptor.o \
 		addfaceinstream.o \
 		addnewcamera.o \
@@ -81,113 +56,17 @@ OBJECTS       = addfacedescriptor.o \
 		moc_mainwindow.o \
 		moc_qwidgetrtspstream.o \
 		moc_rtspstreamer.o
-DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/sanitize.conf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/gcc-base.conf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/gcc-base-unix.conf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/g++-base.conf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/g++-unix.conf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/qconfig.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_accessibility_support_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_concurrent.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_concurrent_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_core.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_core_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_dbus.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_dbus_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_devicediscovery_support_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_edid_support_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_egl_support_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_eglfs_kms_support_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_eglfsdeviceintegration_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_eventdispatcher_support_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_fb_support_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_fontdatabase_support_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_glx_support_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_gui.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_gui_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_input_support_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_kms_support_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_linuxaccessibility_support_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_network.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_network_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_opengl.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_opengl_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_openglextensions.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_openglextensions_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_platformcompositor_support_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_printsupport.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_printsupport_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_service_support_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_sql.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_sql_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_testlib.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_testlib_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_theme_support_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_vulkan_support_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_widgets.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_widgets_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_xcb_qpa_lib_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_xkbcommon_support_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_xml.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_xml_private.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_functions.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resolve_config.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_post.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/warn_on.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resources_functions.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resources.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/moc.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/unix/opengl.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/uic.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/unix/thread.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qmake_use.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/file_copies.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/testcase_targets.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		EltexViewFRS.pro addfacedescriptor.h \
-		addfaceinstream.h \
-		addnewcamera.h \
-		addrele.h \
-		addreleinstream.h \
-		enterfacedescriptor.h \
-		enterrtspstream.h \
-		mainwindow.h \
-		qwidgetrtspstream.h \
-		rtspstreamer.h addfacedescriptor.cpp \
-		addfaceinstream.cpp \
-		addnewcamera.cpp \
-		addrele.cpp \
-		addreleinstream.cpp \
-		enterfacedescriptor.cpp \
-		enterrtspstream.cpp \
-		main.cpp \
-		mainwindow.cpp \
-		qwidgetrtspstream.cpp \
-		rtspstreamer.cpp
-QMAKE_TARGET  = EltexViewFRS
+
 TARGET        = EltexViewFRS
 
 first: all
 
-EltexViewFRS: ui_addfacedescriptor.h ui_addfaceinstream.h ui_addnewcamera.h ui_addrele.h ui_addreleinstream.h ui_enterfacedescriptor.h ui_enterrtspstream.h ui_mainwindow.h $(OBJECTS)  
-	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
-
 all: EltexViewFRS
 
 build: EltexViewFRS
+
+EltexViewFRS: ui_addfacedescriptor.h ui_addfaceinstream.h ui_addnewcamera.h ui_addrele.h ui_addreleinstream.h ui_enterfacedescriptor.h ui_enterrtspstream.h ui_mainwindow.h $(OBJECTS)  
+	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 prepare: 
 	sudo apt update 
@@ -196,15 +75,12 @@ prepare:
 	bash ./setup_libhv.sh
 	bash ./setup_boost.sh
 
+crossdeploy: EltexViewFRS
+	cqtdeployer -bin EltexViewFRS -qmake /usr/bin/qmake -libDir ./lib -recursiveDepth 5 -extraLibs libffi.so.7,libmd4c.so.0,ibmd4c.so.0,libaom.so.3,libatk-1.0.so.0,libavcodec.so.58,libavformat.so.58,libavutil.so.56,libblkid.so.1,libbluray.so.2,libbrotlicommon.so.1,libbrotlidec.so.1,libbsd.so.0,libbz2.so.1.0,libcairo-gobject.so.2,libcairo.so.2,libcap.so.2,libchromaprint.so.1,libcodec2.so.1.0,libcom_err.so.2,libcrypto.so.3,libdatrie.so.1,libdav1d.so.5,libdbus-1.so.3,libdouble-conversion.so.3,libdrm.so.2,libdw.so.1,libEGL.so.1,libelf.so.1,libexpat.so.1,libffi.so.8,libfontconfig.so.1,libfreetype.so.6,libfribidi.so.0,libgcc_s.so.1,libgcrypt.so.20,libgdk_pixbuf-2.0.so.0,libgdk-x11-2.0.so.0,libgio-2.0.so.0,libGLdispatch.so.0,libglib-2.0.so.0,libGL.so.1,libGLX.so.0,libgme.so.0,libgmodule-2.0.so.0,libgmp.so.10,libgnutls.so.30,libgobject-2.0.so.0,libgomp.so.1,libgpg-error.so.0,libgraphite2.so.3,libgsm.so.1,libgssapi_krb5.so.2,libgstapp-1.0.so.0,libgstaudio-1.0.so.0,libgstbase-1.0.so.0,libgstpbutils-1.0.so.0,libgstreamer-1.0.so.0,libgstriff-1.0.so.0,libgsttag-1.0.so.0,libgstvideo-1.0.so.0,libgtk-x11-2.0.so.0,libharfbuzz.so.0,libhogweed.so.6,libhv.so,libICE.so.6,libicudata.so.70,libicui18n.so.70,libicuuc.so.70,libidn2.so.0,libjpeg.so.8,libk5crypto.so.3,libkeyutils.so.1,libkrb5.so.3,libkrb5support.so.0,liblz4.so.1,liblzma.so.5,libmd4c.so.0,libmd.so.0,libmfx.so.1,libmount.so.1,libmp3lame.so.0,libmpg123.so.0,libm.so.6,libnettle.so.8,libnorm.so.1,libnuma.so.1,libogg.so.0,libOpenCL.so.1,libopencv_core.so.405,libopencv_highgui.so.405,libopencv_imgcodecs.so.405,libopencv_imgproc.so.405,libopencv_videoio.so.405,libopenjp2.so.7,libopenmpt.so.0,libopus.so.0,liborc-0.4.so.0,libp11-kit.so.0,libpango-1.0.so.0,libpangocairo-1.0.so.0,libpangoft2-1.0.so.0,libpcre2-16.so.0,libpcre2-8.so.0,libpcre.so.3,libpgm-5.3.so.0,libpixman-1.so.0,libpng16.so.16,libQt5Core.so.5,libQt5DBus.so.5,libQt5Gui.so.5,libQt5Network.so.5,libQt5Widgets.so.5,libQt5XcbQpa.so.5,librabbitmq.so.4,libresolv.so.2,librsvg-2.so.2,libselinux.so.1,libshine.so.3,libSM.so.6,libsnappy.so.1,libsodium.so.23,libsoxr.so.0,libspeex.so.1,libsrt-gnutls.so.1.4,libssh-gcrypt.so.4,libssl.so.3,libstdc++.so.6,libswresample.so.3,libswscale.so.5,libsystemd.so.0,libtasn1.so.6,libthai.so.0,libtheoradec.so.1,libtheoraenc.so.1,libtwolame.so.0,libudfread.so.0,libunistring.so.2,libunwind.so.8,libuuid.so.1,libva-drm.so.2,libva.so.2,libva-x11.so.2,libvdpau.so.1,libvorbisenc.so.2,libvorbisfile.so.3,libvorbis.so.0,libvpx.so.7,libwebpmux.so.3,libwebp.so.7,libX11.so.6,libX11-xcb.so.1,libx264.so.163,libx265.so.199,libXau.so.6,libxcb-icccm.so.4,libxcb-image.so.0,libxcb-keysyms.so.1,libxcb-randr.so.0,libxcb-render.so.0,libxcb-render-util.so.0,libxcb-shape.so.0,libxcb-shm.so.0,libxcb.so.1,libxcb-sync.so.1,libxcb-util.so.1,libxcb-xfixes.so.0,libxcb-xinerama.so.0,libxcb-xinput.so.0,libxcb-xkb.so.1,libXcomposite.so.1,libXcursor.so.1,libXdamage.so.1,libXdmcp.so.6,libXext.so.6,libXfixes.so.3,libXinerama.so.1,libXi.so.6,libxkbcommon.so.0,libxkbcommon-x11.so.0,libxml2.so.2,libXrandr.so.2,libXrender.so.1,libxvidcore.so.4,libzmq.so.5,libz.so.1,libzstd.so.1,libzvbi.so.0,linux-vdso.so.1 qif
+
 clean: compiler_clean 
 	-$(DEL_FILE) $(OBJECTS)
 	-$(DEL_FILE) *~ core *.core
-
-
-distclean: clean 
-	-$(DEL_FILE) $(TARGET) 
-	-$(DEL_FILE) .qmake.stash
-	-$(DEL_FILE) Makefile
 
 mocclean: compiler_moc_header_clean compiler_moc_objc_header_clean compiler_moc_source_clean
 
