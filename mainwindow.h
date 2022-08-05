@@ -19,6 +19,8 @@
 #include <QImage>
 #include <QMetaObject>
 #include <QTableWidget>
+#include <QHostInfo>
+#include <QNetworkInterface>
 
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -54,14 +56,15 @@ private slots:
     void replyFinished (QNetworkReply *reply);
     void updata_pixmap(cv::Mat imange);
     void on_action_2_triggered();
-    void on_listStream_itemClicked(QListWidgetItem *item);
     void on_B_Play_stream_clicked();
     void on_B_Stream_Del_clicked();
     void on_B_New_stream_clicked();
     void on_lineStreamId_editingFinished();
     void on_B_Accept_clicked();
-
     void on_B_Close_clicked();
+    void on_listStream_currentIndexChanged(int index);
+
+    void on_B_Connect_server_clicked();
 
 signals:
     void dataDone(cv::Mat imange);
@@ -84,5 +87,6 @@ private:
     WebSocketClient *ws;
     QMetaObject::Connection connected;
     bool addMode;
+    QString ip_server = "localhost";
 };
 #endif // MAINWINDOW_H

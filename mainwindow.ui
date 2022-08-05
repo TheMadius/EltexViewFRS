@@ -2,19 +2,11 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>844</width>
-    <height>610</height>
-   </rect>
-  </property>
   <property name="windowTitle">
    <string>EltexRFS</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_17">
+   <layout class="QVBoxLayout" name="verticalLayout_7">
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
@@ -22,7 +14,7 @@
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>Видеопотки</string>
+        <string>Видеостена</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_8">
         <item>
@@ -99,71 +91,119 @@
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
-        <string>Видеопотки</string>
+        <string>Базовая конфигурация</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_14">
+       <layout class="QHBoxLayout" name="horizontalLayout_16">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_13">
           <item>
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Список видеопотоков</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_15">
+            <item>
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>Список видеопотоков</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>Адрес сервера</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="ipServer"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="B_Connect_server">
+              <property name="text">
+               <string>Присоединиться</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="1,3">
+           <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="2,5">
             <item>
              <layout class="QVBoxLayout" name="verticalLayout_8">
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_7">
                 <item>
-                 <widget class="QPushButton" name="B_New_stream">
-                  <property name="text">
-                   <string>Новая видеопоток</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="find_edit">
-                <property name="text">
-                 <string>Поиск</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QListWidget" name="listStream"/>
-              </item>
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_7">
-                <item>
-                 <widget class="QPushButton" name="B_Export_stream">
-                  <property name="text">
-                   <string>Экспорт видеопотока</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="B_Import_stream">
-                  <property name="text">
-                   <string>Импорт видеопотока</string>
-                  </property>
-                 </widget>
+                 <layout class="QVBoxLayout" name="verticalLayout_17" stretch="0,6,0,4">
+                  <item>
+                   <widget class="QLabel" name="label_6">
+                    <property name="text">
+                     <string>Дескрипторы лица</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QTableWidget" name="list_face">
+                    <column>
+                     <property name="text">
+                      <string>Вкл/Выкл</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Номер лица</string>
+                     </property>
+                    </column>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_14">
+                    <item>
+                     <widget class="QPushButton" name="pushButton">
+                      <property name="text">
+                       <string>Добавить</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <spacer name="verticalSpacer_5">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </item>
@@ -176,7 +216,35 @@
                 <item>
                  <layout class="QVBoxLayout" name="verticalLayout_6">
                   <item>
+                   <widget class="QLabel" name="label_10">
+                    <property name="text">
+                     <string>Список видеопотоков</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
                    <layout class="QVBoxLayout" name="verticalLayout">
+                    <item>
+                     <layout class="QHBoxLayout" name="horizontalLayout_13">
+                      <item>
+                       <widget class="QPushButton" name="B_New_stream">
+                        <property name="text">
+                         <string>Новый </string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="B_Stream_Del">
+                        <property name="text">
+                         <string>Удалить </string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="listStream"/>
+                    </item>
                     <item>
                      <widget class="QLabel" name="label">
                       <property name="text">
@@ -239,25 +307,17 @@
                     <item>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
                       <item>
-                       <widget class="QLabel" name="label_6">
-                        <property name="text">
-                         <string>Дескрипторы лица</string>
+                       <spacer name="verticalSpacer_3">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
                         </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QTableWidget" name="list_face">
-                        <column>
-                         <property name="text">
-                          <string>Вкл/Выкл</string>
-                         </property>
-                        </column>
-                        <column>
-                         <property name="text">
-                          <string>Номер лица</string>
-                         </property>
-                        </column>
-                       </widget>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
                       </item>
                      </layout>
                     </item>
@@ -314,19 +374,6 @@
                        </layout>
                       </item>
                       <item>
-                       <spacer name="verticalSpacer_4">
-                        <property name="orientation">
-                         <enum>Qt::Vertical</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>20</width>
-                          <height>40</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
-                      <item>
                        <widget class="QPushButton" name="B_Add_zone">
                         <property name="text">
                          <string>Добавить зону</string>
@@ -340,6 +387,26 @@
                         </property>
                        </widget>
                       </item>
+                      <item>
+                       <widget class="QPushButton" name="B_Clean_zone_2">
+                        <property name="text">
+                         <string>Очистить зону</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="verticalSpacer_4">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
                      </layout>
                     </item>
                    </layout>
@@ -350,13 +417,6 @@
               </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_9">
-                <item>
-                 <widget class="QPushButton" name="B_Stream_Del">
-                  <property name="text">
-                   <string>Удалить видеопоток</string>
-                  </property>
-                 </widget>
-                </item>
                 <item>
                  <spacer name="horizontalSpacer_2">
                   <property name="orientation">
@@ -407,7 +467,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>844</width>
+     <width>817</width>
      <height>22</height>
     </rect>
    </property>

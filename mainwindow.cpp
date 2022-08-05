@@ -48,11 +48,21 @@ MainWindow::MainWindow(QWidget *parent)
     this->ui->graphicsStreeam->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->ui->graphicsStreeam->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+    this->ui->listStream->addItem("Пусто");
     auto listStream = getListStream();
     for (auto var: listStream) {
         this->ui->listStream->addItem(var.c_str());
     }
     addMode = false;
+
+    const QHostAddress &localhost = QHostAddress(QHostAddress::LocalHost);
+    for (const QHostAddress &address: QNetworkInterface::allAddresses()) {
+        if (address.protocol() == QAbstractSocket::IPv4Protocol && address != localhost){
+              this->ui->statusbar->showMessage(address.toString());
+              break;
+        }
+    }
+    this->ui->ipServer->setText(this->ip_server);
 }
 
 void MainWindow::updata_pixmap(cv::Mat imange)
@@ -69,7 +79,11 @@ void MainWindow::__getSetting(std::string name_jfile) {
 std::vector<std::string> MainWindow::getListStream() {
     std::vector<std::string> streamid;
     QString listStreams;
-    listStreams = sendServerPostRequest("http://localhost:9051/api/listStreams", "", true);
+
+    listStreams = sendServerPostRequest("http://"+ip_server+":9051/api/listStreams", "", true);
+    if(listStreams.isEmpty())
+        return streamid;
+
     try {
         boost::json::value stream = boost::json::parse(listStreams.toStdString().c_str());
         if(stream.kind() != boost::json::kind::null)
@@ -91,8 +105,11 @@ std::vector<std::string> MainWindow::getListStream() {
 std::vector<int> MainWindow::getListFace() {
     std::vector<int> face;
     QString listAllFaces;
-    listAllFaces = sendServerPostRequest("http://localhost:9051/api/listAllFaces", "", true);
-    qDebug() << listAllFaces;
+
+    listAllFaces = sendServerPostRequest("http://"+ip_server+":9051/api/listAllFaces", "", true);
+    if(listAllFaces.isEmpty())
+        return face;
+
     try {
         boost::json::value json_fase = boost::json::parse(listAllFaces.toStdString().c_str());
         if(json_fase.kind() != boost::json::kind::null) {
@@ -116,7 +133,11 @@ std::vector<std::string> MainWindow::getlistRele()
 {
     std::vector<std::string> rele;
     QString listReles;
-    listReles = sendServerPostRequest("http://localhost:9051/api/listReles", "", true);
+
+    listReles = sendServerPostRequest("http://"+ip_server+":9051/api/listReles", "", true);
+    if(listReles.isEmpty())
+        return rele;
+
     try {
         boost::json::value json_fase = boost::json::parse(listReles.toStdString().c_str());
         if(json_fase.kind() != boost::json::kind::null) {
@@ -189,44 +210,6 @@ void MainWindow::replyFinished (QNetworkReply *reply) {
     reply->deleteLater();
 }
 
-void MainWindow::on_listStream_itemClicked(QListWidgetItem *item)
-{
-    if(this->addMode) {
-        this->ui->listStream->setCurrentItem(this->ui->listStream->item(0));
-    } else {
-        std::vector<int> allFace = getListFace();
-        addElementInList(allFace, this->ui->list_face);
-        this->ui->lineStreamId->setText(item->text());
-        this->ui->lineStream_url->setText("");
-        QString listDataStream = sendServerPostRequest("http://localhost:9051/api/listStreams", "", true);
-        qDebug() << listDataStream;
-        try {
-            boost::json::value stream = boost::json::parse(listDataStream.toStdString().c_str());
-            if (stream.kind() != boost::json::kind::null) {
-                stream = stream.at("data");
-                std::vector<boost::json::object> vData = boost::json::value_to<std::vector<boost::json::object>>(stream);
-                for(auto var: vData) {
-                    auto stream = boost::json::value_to<std::string>(var.at("streamId"));
-                    if(stream == item->text().toStdString()){
-                        std::vector<int> faseInStream;
-                        try {faseInStream = boost::json::value_to<std::vector<int>>(var.at("faces"));}catch (...){}
-                        for (auto item : faseInStream) {
-                            int index = std::find(allFace.begin(), allFace.end(), item) - allFace.begin();
-                            if (index >= 0) {
-                                ((QCheckBox *)(this->ui->list_face->cellWidget(index, 0)))->setChecked(true);
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (...) {
-            QMessageBox::critical(NULL, QObject::tr("Ошибка"), QObject::tr("Ошибка преобразования json!!!"));
-            qDebug() << "Ошибка преобразования json!!!";
-            return;
-        }
-    }
-}
-
 void MainWindow::on_B_Play_stream_clicked()
 {
     if (this->addMode) {
@@ -237,7 +220,7 @@ void MainWindow::on_B_Play_stream_clicked()
             QRegExp re( "ws://[\\d\\.\\:]+" );
             QString url, text;
 
-            text = sendServerGetRequest("http://localhost:9051/api/watchVideo?streamId=" + this->ui->lineStreamId->text(), true);
+            text = sendServerGetRequest("http://"+ip_server+":9051/api/watchVideo?streamId=" + this->ui->lineStreamId->text(), true);
             re.indexIn(text);
             url = re.cap() + "/" + this->ui->lineStreamId->text();
             ws->open(url.toStdString().c_str());
@@ -254,15 +237,16 @@ void MainWindow::on_B_Play_stream_clicked()
 void MainWindow::on_B_Stream_Del_clicked()
 {
     clearPage();
-    auto item = this->ui->listStream->currentItem();
+    if(this->ui->listStream->currentIndex() != 0) {
+        auto item = this->ui->listStream->itemText(this->ui->listStream->currentIndex());
 
-    boost::json::object data;
-    data["streamId"] = item->text().toStdString();
-    sendServerPostRequest("http://localhost:9051/api/removeStream", boost::json::serialize(data));
+        boost::json::object data;
+        data["streamId"] = item.toStdString();
+        sendServerPostRequest("http://"+ip_server+":9051/api/removeStream", boost::json::serialize(data));
 
-    this->ui->listStream->removeItemWidget(this->ui->listStream->currentItem());
-    this->ui->listStream->setCurrentItem(nullptr);
-    delete item;
+        this->ui->listStream->removeItem(this->ui->listStream->currentIndex());
+        this->ui->listStream->setCurrentIndex(0);
+    }
 }
 
 void MainWindow::clearPage()
@@ -287,15 +271,15 @@ void MainWindow::on_B_New_stream_clicked()
         auto listface = this->getListFace();
         addElementInList(listface, this->ui->list_face);
 
-        this->ui->listStream->insertItem(0, "");
-        this->ui->listStream->setCurrentItem(this->ui->listStream->item(0));
+        this->ui->listStream->insertItem(1, "");
+        this->ui->listStream->setCurrentIndex(1);
     }
 }
 
 void MainWindow::on_lineStreamId_editingFinished()
 {
     if(this->addMode)
-        this->ui->listStream->currentItem()->setText(this->ui->lineStreamId->text());
+        this->ui->listStream->setCurrentText(this->ui->lineStreamId->text());
 }
 
 void MainWindow::addElementInList(std::vector<int>& list, QTableWidget *table)
@@ -319,11 +303,11 @@ void MainWindow::on_B_Accept_clicked()
         } else {
             data["streamId"] = id.toStdString();
             data["url"] = url.toStdString();
-            sendServerPostRequest("http://localhost:9051/api/addStream", boost::json::serialize(data));
+            sendServerPostRequest("http://"+ip_server+":9051/api/addStream", boost::json::serialize(data));
             this->addMode = false;
         }
     } else {
-        if(this->ui->listStream->currentItem()) {
+        if(this->ui->listStream->currentIndex() != 0) {
             boost::json::object data;
             boost::json::object data_rm;
             boost::json::array face;
@@ -339,8 +323,8 @@ void MainWindow::on_B_Accept_clicked()
             }
             data["faces"] = face;
             data_rm["faces"] = face_rm;
-            sendServerPostRequest("http://localhost:9051/api/addFaces", boost::json::serialize(data));
-            sendServerPostRequest("http://localhost:9051/api/removeFaces", boost::json::serialize(data_rm));
+            sendServerPostRequest("http://"+ip_server+":9051/api/addFaces", boost::json::serialize(data));
+            sendServerPostRequest("http://"+ip_server+":9051/api/removeFaces", boost::json::serialize(data_rm));
         }
     }
 }
@@ -349,10 +333,7 @@ void MainWindow::on_B_Close_clicked()
 {
     if (this->addMode) {
         clearPage();
-        auto item = this->ui->listStream->currentItem();
-        this->ui->listStream->removeItemWidget(this->ui->listStream->currentItem());
-        this->ui->listStream->setCurrentItem(nullptr);
-        delete item;
+        this->ui->listStream->removeItem(this->ui->listStream->currentIndex());
         addMode = false;
     }
 }
@@ -369,7 +350,53 @@ void MainWindow::on_action_2_triggered()
         data["name"] = subWin->f_name.toStdString();
         data["surname"] = subWin->l_name.toStdString();
         data["lastname"] = subWin->m_name.toStdString();
-        sendServerPostRequest("http://localhost:9051/api/registerFace", boost::json::serialize(data));
+        sendServerPostRequest("http://"+ip_server+":9051/api/registerFace", boost::json::serialize(data));
     }
     delete subWin;
 }
+
+void MainWindow::on_listStream_currentIndexChanged(int index)
+{
+    if(this->addMode) {
+
+    } else {
+        if(index == 0)
+            return;
+        std::vector<int> allFace = getListFace();
+        addElementInList(allFace, this->ui->list_face);
+        this->ui->lineStreamId->setText(this->ui->listStream->currentText());
+        this->ui->lineStream_url->setText("");
+        QString listDataStream = sendServerPostRequest("http://"+ip_server+":9051/api/listStreams", "", true);
+        try {
+            boost::json::value stream = boost::json::parse(listDataStream.toStdString().c_str());
+            if (stream.kind() != boost::json::kind::null) {
+                stream = stream.at("data");
+                std::vector<boost::json::object> vData = boost::json::value_to<std::vector<boost::json::object>>(stream);
+                for(auto var: vData) {
+                    auto stream = boost::json::value_to<std::string>(var.at("streamId"));
+                    if(stream == this->ui->listStream->currentText().toStdString()){
+                        std::vector<int> faseInStream;
+                        try {faseInStream = boost::json::value_to<std::vector<int>>(var.at("faces"));}catch (...){}
+                        for (auto item : faseInStream) {
+                            int index = std::find(allFace.begin(), allFace.end(), item) - allFace.begin();
+                            if (index >= 0) {
+                                ((QCheckBox *)(this->ui->list_face->cellWidget(index, 0)))->setChecked(true);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (...) {
+            QMessageBox::critical(NULL, QObject::tr("Ошибка"), QObject::tr("Ошибка преобразования json!!!"));
+            qDebug() << "Ошибка преобразования json!!!";
+            return;
+        }
+    }
+}
+
+void MainWindow::on_B_Connect_server_clicked()
+{
+    this->ip_server = this->ui->ipServer->text();
+    sendServerPostRequest("http://"+ip_server+":9051/api/listStreams", "");
+}
+
